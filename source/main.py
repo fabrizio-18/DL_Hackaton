@@ -126,7 +126,7 @@ def main(args):
     if args.no_half:
         model = model.float()
     #optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-    u_B = torch.nn.Parameter(torch.zeros(args.batch_size, device=device), requires_grad=True)
+    u_B = torch.nn.Parameter(torch.zeros(batch_size, device=device), requires_grad=True)
     optimizer_u_B = torch.optim.Adam([u_B], lr=1)
     optimizer = torch.optim.AdamW(model.parameters(),lr=1e-3,weight_decay=5e-4)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer,
