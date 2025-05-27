@@ -103,12 +103,12 @@ def main(args):
 
     # Parameters for the GNN model
     input_dim  = 1      # dummy feature dimension (i nodi non hanno feature, usiamo embedding su 1 “label”)
-    hidden_dim = 128    # dimensione degli embedding/node hidden
+    hidden_dim = 300    # dimensione degli embedding/node hidden
     output_dim = 6      # numero di classi da predire
     dropout    = 0.2    # dropout ratio
     batch_size = 32     # dimensione del batch
     num_layer  = 5      # numero di message‐passing layers
-    gnn   = 'gcn'  # 'gin' | 'gin-virtual' | 'gcn' | 'gcn-virtual'
+    gnn   = 'gin'  # 'gin' | 'gin-virtual' | 'gcn' | 'gcn-virtual'
 
     # Initialize the model, optimizer, and loss criterion
     #model = CustomGCN(input_dim, hidden_dim, output_dim, dropout).to(device)  
