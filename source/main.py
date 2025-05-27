@@ -138,7 +138,7 @@ def main(args):
     criterion = GCODLoss(num_classes = 6)
 
     # Prepare test dataset and loader
-    test_dataset = GraphDataset(args.test_path, transform=add_zeros, max_samples=10)
+    test_dataset = GraphDataset(args.test_path, transform=add_zeros)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=0)  
 
     test_dir_name = os.path.basename(os.path.dirname(args.test_path))
@@ -154,7 +154,7 @@ def main(args):
 
     # Train dataset and loader (if train_path is provided)
     if args.train_path:
-        train_dataset = GraphDataset(args.train_path, transform=add_zeros, max_samples=10)
+        train_dataset = GraphDataset(args.train_path, transform=add_zeros)
         val_size = int(0.2 * len(train_dataset))
         train_size = len(train_dataset) - val_size
         generator = torch.Generator().manual_seed(12)
