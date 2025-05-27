@@ -134,6 +134,28 @@ class GNN_node(torch.nn.Module):
                 node_representation += h_list[layer]
 
         return node_representation
+    def forward_from_embeddings(self, node_emb, edge_index, edge_attr):
+        h_list = [node_emb]
+        for layer in range(self.num_layer):
+            h = self.convs[layer](h_list[layer], edge_index, edge_attr)
+            h = self.batch_norms[layer](h)
+
+            if layer == self.num_layer - 1:
+                h = F.dropout(h, self.drop_ratio, training=self.training)
+            else:
+                h = F.dropout(F.relu(h), self.drop_ratio, training=self.training)
+
+            if self.residual:
+                h += h_list[layer]
+
+            h_list.append(h)
+
+        if self.JK == "last":
+            node_representation = h_list[-1]
+        elif self.JK == "sum":
+            node_representation = sum(h_list)
+
+        return node_representation
 
 
 ### Virtual GNN to generate node embedding

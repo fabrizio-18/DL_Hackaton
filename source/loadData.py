@@ -37,3 +37,29 @@ def dictToGraphObject(graph_dict):
     num_nodes = graph_dict["num_nodes"]
     y = torch.tensor(graph_dict["y"][0], dtype=torch.long) if graph_dict["y"] is not None else None
     return Data(edge_index=edge_index, edge_attr=edge_attr, num_nodes=num_nodes, y=y)
+
+
+'''class GraphDataset(Dataset):
+    def __init__(self, filename, transform=None, pre_transform=None, max_samples=None):
+        self.raw = filename
+        self.graphs = self.loadGraphs(self.raw, max_samples)
+        super().__init__(None, transform, pre_transform)
+
+    def len(self):
+        return len(self.graphs)
+
+    def get(self, idx):
+        return self.graphs[idx]
+
+    @staticmethod
+    def loadGraphs(path, max_samples=None):
+        print(f"Loading graphs from {path}...")
+        print("This may take a few minutes, please wait...")
+        with gzip.open(path, "rt", encoding="utf-8") as f:
+            graphs_dicts = json.load(f)
+        if max_samples is not None:
+            graphs_dicts = graphs_dicts[:max_samples]   # <-- prendo solo i primi max_samples grafi
+        graphs = []
+        for graph_dict in tqdm(graphs_dicts, desc="Processing graphs", unit="graph"):
+            graphs.append(dictToGraphObject(graph_dict))
+        return graphs'''

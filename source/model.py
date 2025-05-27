@@ -77,27 +77,20 @@ class GNN(torch.nn.Module):
             self.graph_pred_linear = torch.nn.Linear(self.emb_dim, self.num_class)
 
     def forward(self, batched_data, return_all=False):
-        x, edge_index, batch = batched_data.x, batched_data.edge_index, batched_data.batch
+        x, edge_index, edge_attr, batch = batched_data.x, batched_data.edge_index, batched_data.edge_attr, batched_data.batch
+
+        node_emb = self.gnn_node.node_encoder(x)
 
         if self.training:
-            # Add noise to node features (random normal noise scaled by 0.4)
-            noise = torch.randn_like(x) * 0.4
-            x_noisy = x + noise
+            noise = torch.randn_like(node_emb) * 0.2
+            node_emb_noisy = node_emb + noise
 
-            # Drop edges randomly with drop probability 0.2
-            edge_index_perturbed = self.drop_edges(edge_index, drop_prob=0.2)
-
-            # First pass: noisy node features + original edges
-            batched_data.x = x_noisy
-            batched_data.edge_index = edge_index
-            h_node = self.gnn_node(batched_data)
+            h_node = self.gnn_node.forward_from_embeddings(node_emb_noisy, edge_index, edge_attr)
             h_graph = self.pool(h_node, batch)
             out = self.graph_pred_linear(h_graph)
 
-            # Second pass: same noisy features + perturbed edges
-            batched_data.x = x_noisy  # reuse same noisy features
-            batched_data.edge_index = edge_index_perturbed
-            h_node_perturbed = self.gnn_node(batched_data)
+            edge_index_perturbed, edge_attr_perturbed = self.drop_edges(edge_index, edge_attr, drop_prob=0.2)
+            h_node_perturbed = self.gnn_node.forward_from_embeddings(node_emb_noisy, edge_index_perturbed, edge_attr_perturbed)
             h_graph_perturbed = self.pool(h_node_perturbed, batch)
             out_perturbed = self.graph_pred_linear(h_graph_perturbed)
 
@@ -105,17 +98,12 @@ class GNN(torch.nn.Module):
                 return out, out_perturbed
             else:
                 return out
-
         else:
-            # Evaluation mode: no noise, no edge dropout
-            batched_data.x = x
-            batched_data.edge_index = edge_index
             h_node = self.gnn_node(batched_data)
             h_graph = self.pool(h_node, batch)
             out = self.graph_pred_linear(h_graph)
             return out
-    
-    def drop_edges(self, edge_index, drop_prob):
-        # Get mask for keeping edges
+
+    def drop_edges(self, edge_index, edge_attr, drop_prob):
         mask = torch.rand(edge_index.size(1), device=edge_index.device) >= drop_prob
-        return edge_index[:, mask]
+        return edge_index[:, mask], edge_attr[mask]
