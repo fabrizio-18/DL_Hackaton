@@ -38,7 +38,7 @@ Our approach involves dataset-specific hyperparameter tuning to optimize perform
 - **Dataset D**
     * Training Duration: 200 epochs
     * GCE loss function with q=0.5.
-    * Architecture: 5-layer GNN with residual connections and batch normalization
+    * Architecture: GIN-virtual baseline
 - - -
 
 ## 🔧 How to run the code
