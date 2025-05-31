@@ -68,7 +68,7 @@ python main.py --test_path <path_to_test_data> --train_path <path_to_train_data>
    
 Training outputs (checkpoints, logs, results) are automatically saved in their respective directories.
 
-5. **Zip the results in `/submission/` folder:**
+4. **Zip the results in `/submission/` folder:**
 ``` bash
 python zipthefolder.py
 ```
