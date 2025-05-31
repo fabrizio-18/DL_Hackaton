@@ -31,7 +31,7 @@ Our approach involves dataset-specific hyperparameter tuning to optimize perform
 **Training Settings:**
 
 - **Datasets A, B, C**
-    * Training Duration: 300 epochs across all datasets
+    * Training Duration: 300 epochs
     * GCE: q=0.5 for A and C, q=0.9 for B.
     * Architecture: 3-layer GNN with residual connections and batch normalization
 
